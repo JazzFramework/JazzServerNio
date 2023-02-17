@@ -22,7 +22,7 @@ kvbzTynFrOILV0TaDkF46KHIoyAb5vPneapdW7rXbX1Jba3jo9PyvHRMeoh/I8zt
 4g+Je2PpH1TJ/GT9dmYhYgJaIssVpv/fWkWphVXwMmpqiH9vEbln8piXHxvCj9XU
 y7uc6N1VUvIvygzUsR+20wjODoGiXp0g0cj+38n3oG5S9rBd1iGEPMAA/2lQS/0=
 -----END CERTIFICATE-----
-"""
+""";
 
 let samplePKCS8PemPrivateKey = """
 -----BEGIN RSA PRIVATE KEY-----
@@ -52,4 +52,4 @@ Hx84GwKBgHWqSoiaBml/KX+GBUDu8Yp0v+7dkNaiU/RVaSEOFl2wHkJ+bq4V+DX1
 lgofMC2QvBrSinEjHrQPZILl+lOq/ppDcnxhY/3bljsutcgHhIT7PKYDOxFqflMi
 ahwyQwRg2oQ2rBrBevgOKFEuIV62WfDYXi8SlT8QaZpTt2r4PYt4
 -----END RSA PRIVATE KEY-----
-"""
+""";

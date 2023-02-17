@@ -16,7 +16,7 @@ internal final class ResultStreamImpl: ResultStream {
     }
 
     deinit {
-        if let input = input {
+        if let input {
             input.close();
         }
     }

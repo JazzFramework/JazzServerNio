@@ -6,7 +6,7 @@ public final class HummingbirdHttpProcessorInitializer: ServerInitializer {
 
     public override final func initialize(for app: ServerApp, with configurationBuilder: ConfigurationBuilder) throws {
         _ = try app
-            .wireUp(singleton: { sp in
+            .wireUp(singleton: { _, sp in
                 return HummingbirdHttpProcessor(
                     requestProcessor: try await sp.fetchType(),
                     transcoderCollection: try await sp.fetchType(),

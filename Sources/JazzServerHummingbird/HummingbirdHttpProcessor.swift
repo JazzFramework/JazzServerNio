@@ -141,7 +141,7 @@ internal final class HummingbirdHttpProcessor: HttpProcessor {
     private final func getRequestStream(_ httpRequest: HBRequest) async -> RequestStream {
         switch httpRequest.body {
             case .byteBuffer(let body):
-                if let body = body, body.readableBytes > 0 {
+                if let body, body.readableBytes > 0 {
                     return BufferRequestStreamImpl(body);
                 }
 
