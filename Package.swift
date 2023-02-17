@@ -32,6 +32,7 @@ let package = Package(
         .target(
             name: "JazzServerNio",
             dependencies: [
+                .product(name: "JazzLogging", package: "Jazz"),
                 .product(name: "JazzServer", package: "Jazz"),
 
                 .product(name: "NIOCore", package: "swift-nio"),
@@ -43,6 +44,7 @@ let package = Package(
         .target(
             name: "JazzServerHummingbird",
             dependencies: [
+                .product(name: "JazzLogging", package: "Jazz"),
                 .product(name: "JazzServer", package: "Jazz"),
 
                 .product(name: "Hummingbird", package: "hummingbird"),

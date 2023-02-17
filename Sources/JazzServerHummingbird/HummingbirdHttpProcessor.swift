@@ -3,21 +3,25 @@ import Foundation;
 import Hummingbird;
 
 import JazzCodec;
+import JazzLogging;
 import JazzServer;
 
 internal final class HummingbirdHttpProcessor: HttpProcessor {
     private final let requestProcessor: RequestProcessor;
     private final let transcoderCollection: TranscoderCollection;
     private final let cookieProcessor: CookieProcessor;
+    private final let logger: Logger;
 
     internal init(
         requestProcessor: RequestProcessor,
         transcoderCollection: TranscoderCollection,
-        cookieProcessor: CookieProcessor
+        cookieProcessor: CookieProcessor,
+        logger: Logger
     ) {
         self.requestProcessor = requestProcessor;
         self.transcoderCollection = transcoderCollection;
         self.cookieProcessor = cookieProcessor;
+        self.logger = logger;
     }
 
     public final func start() async throws {
@@ -54,6 +58,8 @@ internal final class HummingbirdHttpProcessor: HttpProcessor {
         let requestStream: RequestStream = await getRequestStream(httpRequest);
         let resultStream: ResultStreamImpl = ResultStreamImpl();
     
+        logger.verbose("Building request context for \(httpRequest.uri.string).");
+
         let builder: RequestContextBuilder = RequestContextBuilder()
             .with(rawInput: requestStream)
             .with(method: translate(method: httpRequest.method))
@@ -65,19 +71,33 @@ internal final class HummingbirdHttpProcessor: HttpProcessor {
             _ = builder.with(header: headerKey, values: [headerValue]);
         }
 
-        let request: RequestContext = try! builder.build();
+        do {
+            let request: RequestContext = try builder.build();
 
-        let result: ResultContext =
-            try! ResultContextBuilder()
-                .with(acceptMediaTypes: getMediaTypes(for: "Accept", in: httpRequest.headers))
-                .with(transcoderCollection: transcoderCollection)
-                .with(cookieProcessor: cookieProcessor)
-                .with(resultStream: resultStream)
-                .build();
+            logger.verbose("Builing result context for \(httpRequest.uri.string).");
 
-        await requestProcessor.process(request: request, result: result);
+            let result: ResultContext =
+                try ResultContextBuilder()
+                    .with(acceptMediaTypes: getMediaTypes(for: "Accept", in: httpRequest.headers))
+                    .with(transcoderCollection: transcoderCollection)
+                    .with(cookieProcessor: cookieProcessor)
+                    .with(resultStream: resultStream)
+                    .build();
+
+            logger.verbose("Running logic for \(httpRequest.uri.string).");
+
+            await requestProcessor.process(request: request, result: result);
+
+            logger.verbose("Ran logic for \(httpRequest.uri.string). Populating request.");
         
-        return populateResult(result, resultStream);
+            return populateResult(result, resultStream);
+        } catch {
+            logger.verbose("Ran into error \(error) for \(httpRequest.uri.string).");
+
+            return HBResponse(
+                status: .custom(code: 500, reasonPhrase: "http processor error \(error)")
+            );
+        }
     }
 
     private final func translate(method: HTTPMethod) -> HttpMethod {

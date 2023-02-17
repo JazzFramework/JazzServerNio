@@ -10,7 +10,8 @@ public final class HummingbirdHttpProcessorInitializer: ServerInitializer {
                 return HummingbirdHttpProcessor(
                     requestProcessor: try await sp.fetchType(),
                     transcoderCollection: try await sp.fetchType(),
-                    cookieProcessor: try await sp.fetchType()
+                    cookieProcessor: try await sp.fetchType(),
+                    logger: try await sp.fetchType()
                 ) as HttpProcessor;
             });
     }
